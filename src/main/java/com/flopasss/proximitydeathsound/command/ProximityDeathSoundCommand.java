@@ -71,6 +71,24 @@ public class ProximityDeathSoundCommand {
                                     context.getSource().sendSuccess(
                                             () -> Component.literal("Chunk range set to: " + chunkRange), true);
                                     return 1;
+                                })))
+                .then(literal("pitch")
+                        .then(argument("pitch", IntegerArgumentType.integer(0, 2))
+                                .suggests((context, builder) -> {
+                                    for (int i = 0; i <= 2; i++) {
+                                        builder.suggest(i);
+                                    }
+                                    return builder.buildFuture();
+                                })
+                                .executes(context -> {
+                                    int pitch = IntegerArgumentType.getInteger(context, "pitch");
+
+                                    ProximityDeathSound.CONFIG.pitch = pitch;
+                                    ProximityDeathSound.CONFIG.save();
+
+                                    context.getSource().sendSuccess(
+                                            () -> Component.literal("Pitch set to: " + pitch), true);
+                                    return 1;
                                 }))));
     }
 }

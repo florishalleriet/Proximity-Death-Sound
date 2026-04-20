@@ -13,9 +13,12 @@ public class ProximityDeathSoundConfig {
     public String soundEffect = "minecraft:entity.wither.spawn"; // Default sound effect
     public String soundCategory = "ambient"; // Default sound category
     public int chunkRange = 16; // Default chunk ranges
+    public int pitch = 1; // Default pitch
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create(); // Gson instance for JSON serialization/deserialization
-    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve(ProximityDeathSound.MOD_ID + ".json"); // Path to the configuration file
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create(); // Gson instance for JSON
+                                                                                     // serialization/deserialization
+    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir()
+            .resolve(ProximityDeathSound.MOD_ID + ".json"); // Path to the configuration file
 
     public static ProximityDeathSoundConfig load() {
         // Return default config if file doesn't exist
@@ -33,7 +36,8 @@ public class ProximityDeathSoundConfig {
             ProximityDeathSoundConfig config = GSON.fromJson(json, ProximityDeathSoundConfig.class);
 
             // If the config is null, return default config
-            if (config == null) return new ProximityDeathSoundConfig();
+            if (config == null)
+                return new ProximityDeathSoundConfig();
 
             // Return the loaded config
             return config;
@@ -41,7 +45,7 @@ public class ProximityDeathSoundConfig {
         } catch (Exception e) {
             // Log the error
             ProximityDeathSound.LOGGER.error("Failed to load config, using default values", e);
-            
+
             // Return default config if there's an exception
             return new ProximityDeathSoundConfig();
         }
