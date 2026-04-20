@@ -16,7 +16,7 @@ public class ProximityDeathSoundCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(literal("proximitydeathsound").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
             .then(literal("soundeffect")
-                .then(argument("soundeffect", StringArgumentType.string())
+                .then(argument("soundeffect", StringArgumentType.greedyString())
                     .executes(context -> {
                         String soundEffect = StringArgumentType.getString(context, "soundeffect");
 
