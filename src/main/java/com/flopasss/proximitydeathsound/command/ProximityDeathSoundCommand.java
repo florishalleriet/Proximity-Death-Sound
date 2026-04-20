@@ -89,6 +89,22 @@ public class ProximityDeathSoundCommand {
                                     context.getSource().sendSuccess(
                                             () -> Component.literal("Pitch set to: " + pitch), true);
                                     return 1;
-                                }))));
+                                })))
+                .then(literal("status")
+                        .executes(context -> {
+                            String sound = ProximityDeathSound.CONFIG.sound;
+                            String source = ProximityDeathSound.CONFIG.source;
+                            int volume = ProximityDeathSound.CONFIG.volume;
+                            int pitch = ProximityDeathSound.CONFIG.pitch;
+
+                            context.getSource().sendSuccess(
+                                    () -> Component.literal("Flopasss Proximity Death Sound Configuration:")
+                                            .append(Component.literal("\nSound: " + sound))
+                                            .append(Component.literal("\nSource: " + source))
+                                            .append(Component.literal("\nVolume: " + volume))
+                                            .append(Component.literal("\nPitch: " + pitch)),
+                                    true);
+                            return 1;
+                        })));
     }
 }
