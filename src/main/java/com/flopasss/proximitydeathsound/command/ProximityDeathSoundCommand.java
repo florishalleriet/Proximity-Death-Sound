@@ -18,8 +18,8 @@ import static net.minecraft.commands.Commands.argument;
 public class ProximityDeathSoundCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(literal("proximitydeathsound").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                .then(literal("soundeffect")
-                        .then(argument("soundeffect", StringArgumentType.greedyString())
+                .then(literal("sound")
+                        .then(argument("sound", StringArgumentType.greedyString())
                                 .suggests((context, builder) -> {
                                     // Suggest all sound event registry names
                                     for (SoundEvent soundEvent : BuiltInRegistries.SOUND_EVENT) {
@@ -31,17 +31,17 @@ public class ProximityDeathSoundCommand {
                                     return builder.buildFuture();
                                 })
                                 .executes(context -> {
-                                    String soundEffect = StringArgumentType.getString(context, "soundeffect");
+                                    String sound = StringArgumentType.getString(context, "sound");
 
-                                    ProximityDeathSound.CONFIG.soundEffect = soundEffect;
+                                    ProximityDeathSound.CONFIG.sound = sound;
                                     ProximityDeathSound.CONFIG.save();
 
                                     context.getSource().sendSuccess(
-                                            () -> Component.literal("Sound effect set to: " + soundEffect), true);
+                                            () -> Component.literal("Sound effect set to: " + sound), true);
                                     return 1;
                                 })))
-                .then(literal("soundcategory")
-                        .then(argument("soundcategory", StringArgumentType.string())
+                .then(literal("source")
+                        .then(argument("source", StringArgumentType.string())
                                 .suggests((context, builder) -> {
                                     // Suggest all sound source categories
                                     for (SoundSource source : SoundSource
@@ -51,25 +51,25 @@ public class ProximityDeathSoundCommand {
                                     return builder.buildFuture();
                                 })
                                 .executes(context -> {
-                                    String soundCategory = StringArgumentType.getString(context, "soundcategory");
+                                    String source = StringArgumentType.getString(context, "source");
 
-                                    ProximityDeathSound.CONFIG.soundCategory = soundCategory;
+                                    ProximityDeathSound.CONFIG.source = source;
                                     ProximityDeathSound.CONFIG.save();
 
                                     context.getSource().sendSuccess(
-                                            () -> Component.literal("Sound category set to: " + soundCategory), true);
+                                            () -> Component.literal("Sound category set to: " + source), true);
                                     return 1;
                                 })))
-                .then(literal("chunkrange")
-                        .then(argument("chunkrange", IntegerArgumentType.integer(0))
+                .then(literal("volume")
+                        .then(argument("volume", IntegerArgumentType.integer(0))
                                 .executes(context -> {
-                                    int chunkRange = IntegerArgumentType.getInteger(context, "chunkrange");
+                                    int volume = IntegerArgumentType.getInteger(context, "volume");
 
-                                    ProximityDeathSound.CONFIG.chunkRange = chunkRange;
+                                    ProximityDeathSound.CONFIG.volume = volume;
                                     ProximityDeathSound.CONFIG.save();
 
                                     context.getSource().sendSuccess(
-                                            () -> Component.literal("Chunk range set to: " + chunkRange), true);
+                                            () -> Component.literal("Chunk range set to: " + volume), true);
                                     return 1;
                                 })))
                 .then(literal("pitch")

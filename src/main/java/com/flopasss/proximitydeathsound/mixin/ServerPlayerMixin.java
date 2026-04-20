@@ -28,9 +28,9 @@ public class ServerPlayerMixin {
         ServerLevel world = (ServerLevel) player.level();
 
         // Get the config values
-        String soundEffect = ProximityDeathSound.CONFIG.soundEffect;
-        String soundCategory = ProximityDeathSound.CONFIG.soundCategory;
-        float chunkRange = (float) ProximityDeathSound.CONFIG.chunkRange;
+        String soundEffect = ProximityDeathSound.CONFIG.sound;
+        String soundCategory = ProximityDeathSound.CONFIG.source;
+        float chunkRange = (float) ProximityDeathSound.CONFIG.volume;
         float pitch = (float) ProximityDeathSound.CONFIG.pitch;
 
         double rangeInBlocks = chunkRange * 16.0;

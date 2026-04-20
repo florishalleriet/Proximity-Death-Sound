@@ -10,9 +10,9 @@ import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ProximityDeathSoundConfig {
-    public String soundEffect = "minecraft:entity.wither.spawn"; // Default sound effect
-    public String soundCategory = "ambient"; // Default sound category
-    public int chunkRange = 16; // Default chunk ranges
+    public String sound = "minecraft:entity.wither.spawn"; // Default sound
+    public String source = "ambient"; // Default source
+    public int volume = 16; // Default volume
     public int pitch = 1; // Default pitch
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create(); // Gson instance for JSON
