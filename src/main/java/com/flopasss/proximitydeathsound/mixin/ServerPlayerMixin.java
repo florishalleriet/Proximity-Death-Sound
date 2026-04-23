@@ -3,7 +3,6 @@ package com.flopasss.proximitydeathsound.mixin;
 import com.flopasss.proximitydeathsound.ProximityDeathSound;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -13,6 +12,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.resources.Identifier;
+import java.util.Optional;
 
 @Mixin(ServerPlayer.class)
 public class ServerPlayerMixin {
@@ -20,41 +21,36 @@ public class ServerPlayerMixin {
     private void onDie(DamageSource damageSource, CallbackInfo callbackInfo) {
         // Get the player
         ServerPlayer player = (ServerPlayer) (Object) this;
-
-        // Get the player's coordinates and world
-        double x = player.getX();
-        double y = player.getY();
-        double z = player.getZ();
+        // Get the player's dimension
         ServerLevel world = (ServerLevel) player.level();
 
         // Get the config values
-        String soundEffect = ProximityDeathSound.CONFIG.sound;
-        String soundCategory = ProximityDeathSound.CONFIG.source;
-        float chunkRange = (float) ProximityDeathSound.CONFIG.volume;
+        String sound = ProximityDeathSound.CONFIG.sound;
+        String source = ProximityDeathSound.CONFIG.source;
+        float volume = (float) ProximityDeathSound.CONFIG.volume;
         float pitch = (float) ProximityDeathSound.CONFIG.pitch;
 
-        double rangeInBlocks = chunkRange * 16.0;
-
-        // Find sound event by registry name
-        var soundEventOptional = BuiltInRegistries.SOUND_EVENT.stream()
-                .filter(s -> BuiltInRegistries.SOUND_EVENT.getKey(s).toString().equals(soundEffect))
-                .findFirst();
-
-        if (soundEventOptional.isEmpty()) {
-            ProximityDeathSound.LOGGER.warn("Invalid sound effect in config: {}", soundEffect);
+        // Validate the sound
+        Identifier soundId = Identifier.tryParse(sound);
+        var soundHolder = soundId == null
+                ? Optional.<Holder.Reference<SoundEvent>>empty()
+                : BuiltInRegistries.SOUND_EVENT.get(soundId);
+        if (soundHolder.isEmpty()) {
+            ProximityDeathSound.LOGGER.warn("Invalid sound identifier: " + sound);
             return;
         }
 
-        SoundEvent soundEvent = soundEventOptional.get();
+        // Validate the sound source
+        SoundSource soundSource;
+        try {
+            soundSource = SoundSource.valueOf(source.toUpperCase());
+        } catch (Exception e) {
+            ProximityDeathSound.LOGGER.warn("Invalid sound source: " + source);
+            return;
+        }
 
-        world.players().stream()
-                .filter(p -> p.distanceToSqr(x, y, z) <= rangeInBlocks * rangeInBlocks)
-                .forEach(p -> p.connection.send(new ClientboundSoundPacket(
-                        Holder.direct(soundEvent),
-                        SoundSource.valueOf(soundCategory.toUpperCase()),
-                        x, y, z,
-                        chunkRange,
-                        pitch,
-                        0L)));
+        // Play the sound to all players in the dimension
+        world.playSound(null, player.getX(), player.getY(), player.getZ(), soundHolder.get(), soundSource, volume,
+                pitch);
     }
 }
