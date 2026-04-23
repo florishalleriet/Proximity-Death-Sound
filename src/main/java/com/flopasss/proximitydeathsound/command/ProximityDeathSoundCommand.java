@@ -31,7 +31,7 @@ public class ProximityDeathSoundCommand {
     }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(literal("proximitydeathsound").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        dispatcher.register(literal("proximityDeathSound").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(literal("sound")
                         .then(argument("sound", StringArgumentType.greedyString())
                                 // SharedSuggestionProvider.suggestResource does prefix
