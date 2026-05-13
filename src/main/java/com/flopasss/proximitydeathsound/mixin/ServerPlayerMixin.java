@@ -15,24 +15,31 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayer.class)
 public class ServerPlayerMixin {
+
     @Inject(at = @At("HEAD"), method = "die")
     private void onDie(DamageSource damageSource, CallbackInfo callbackInfo) {
         ProximityDeathSoundConfig config = ProximityDeathSound.CONFIG;
-        Holder.Reference<SoundEvent> soundEvent = config.getResolvedSoundEvent();
+        Holder.Reference<SoundEvent> soundEvent =
+            config.getResolvedSoundEvent();
         SoundSource soundSource = config.getResolvedSoundSource();
 
         // Silently skip if the config is invalid — the warning was emitted
         // once at load/command time, no need to spam on every death.
-        if (soundEvent == null || soundSource == null)
-            return;
+        if (soundEvent == null || soundSource == null) return;
 
         ServerPlayer player = (ServerPlayer) (Object) this;
         ServerLevel world = (ServerLevel) player.level();
 
         // Play the sound to all players in the dimension
-        world.playSound(null,
-                player.getX(), player.getY(), player.getZ(),
-                soundEvent, soundSource,
-                (float) config.volume, (float) config.pitch);
+        world.playSound(
+            null,
+            player.getX(),
+            player.getY(),
+            player.getZ(),
+            soundEvent,
+            soundSource,
+            (float) config.volume,
+            (float) config.pitch
+        );
     }
 }
